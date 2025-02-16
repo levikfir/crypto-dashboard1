@@ -5,6 +5,7 @@ import requests
 from plyer import notification
 import time
 from twilio.rest import Client
+import os
 
 # התקנת הספריות החסרות
 try:
@@ -32,10 +33,19 @@ def get_crypto_price(symbol, currency="usd"):
         st.error(f"שגיאה בשליפת מחירי מטבעות: {e}")
         return None
 
-# טוען את הנתונים
+# בדיקה אם קובץ הנתונים קיים
 file_path = "/mnt/data/INVEST GPT 2.xlsx"
 sheet_name = "חישובים"
-df = pd.read_excel(file_path, sheet_name=sheet_name, engine="openpyxl")
+
+if not os.path.exists(file_path):
+    st.error(f"❌ קובץ הנתונים לא נמצא: {file_path}. ודא שהעלית את הקובץ ל-Streamlit Cloud או שהנתיב נכון.")
+    st.stop()
+
+try:
+    df = pd.read_excel(file_path, sheet_name=sheet_name, engine="openpyxl")
+except Exception as e:
+    st.error(f"❌ שגיאה בטעינת קובץ ה-Excel: {e}")
+    st.stop()
 
 # המרת עמודות מספריות למספרים, והתעלמות משגיאות
 for col in df.columns[1:]:
