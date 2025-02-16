@@ -6,7 +6,14 @@ from plyer import notification
 import time
 from twilio.rest import Client
 
-# התקנת openpyxl אם חסרה
+# התקנת הספריות החסרות
+try:
+    import plotly.express as px
+except ImportError:
+    import subprocess
+    subprocess.run(["pip", "install", "plotly"])
+    import plotly.express as px
+
 try:
     import openpyxl
 except ImportError:
